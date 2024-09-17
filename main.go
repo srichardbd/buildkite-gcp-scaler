@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/endocrimes/buildkite-gcp-scaler/scaler"
 	"github.com/genuinetools/pkg/cli"
 	hclog "github.com/hashicorp/go-hclog"
+	"github.com/srichardbd/buildkite-gcp-scaler/scaler"
 )
 
 var (

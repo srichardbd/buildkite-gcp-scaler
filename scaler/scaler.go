@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/endocrimes/buildkite-gcp-scaler/pkg/buildkite"
-	"github.com/endocrimes/buildkite-gcp-scaler/pkg/gce"
 	hclog "github.com/hashicorp/go-hclog"
+	"github.com/srichardbd/buildkite-gcp-scaler/pkg/buildkite"
+	"github.com/srichardbd/buildkite-gcp-scaler/pkg/gce"
 )
 
 type Config struct {
