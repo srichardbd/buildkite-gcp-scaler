@@ -8,13 +8,11 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.1
 	github.com/hashicorp/go-hclog v0.8.0
 	github.com/hashicorp/go-multierror v1.0.0
-	github.com/srichardbd/buildkite-gcp-scaler v0.0.0-20190331173125-30904365eb3a
 	google.golang.org/api v0.3.0
 )
 
 require (
-	cloud.google.com/go v0.37.2 // indirect
-	github.com/endocrimes/buildkite-gcp-scaler v0.0.0-20190331173125-30904365eb3a // indirect
+	cloud.google.com/go v0.37.2 // indirect; indirect\
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.1 // indirect

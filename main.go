@@ -4,11 +4,13 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"os"
 	"time"
+
+	"buildkite-gcp-scaler/scaler"
 
 	"github.com/genuinetools/pkg/cli"
 	hclog "github.com/hashicorp/go-hclog"
-	"github.com/srichardbd/buildkite-gcp-scaler/scaler"
 )
 
 var (
@@ -70,7 +72,8 @@ func main() {
 	)
 	p.FlagSet = flag.NewFlagSet("global", flag.ExitOnError)
 	p.FlagSet.BoolVar(&debug, "d", false, "enable debug logging")
-	p.FlagSet.StringVar(&buildkiteToken, "buildkite-token", "", "Buildkite API Token")
+	// Set buildkitetoken from environment variable
+	p.FlagSet.StringVar(&buildkiteToken, "buildkite-token", os.Getenv("BUILDKITE_TOKEN"), "Buildkite API token")
 	p.FlagSet.StringVar(&buildkiteQueue, "buildkite-queue", "default", "Buildkite Queue Name")
 	p.FlagSet.StringVar(&googleCloudInstanceGroup, "instance-group", "", "Google Cloud Instance Group")
 	p.FlagSet.StringVar(&googleCloudTemplateName, "instance-template", "", "Google Cloud Instance Template")

@@ -2,11 +2,13 @@ package scaler
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"buildkite-gcp-scaler/pkg/buildkite"
+	"buildkite-gcp-scaler/pkg/gce"
+
 	hclog "github.com/hashicorp/go-hclog"
-	"github.com/srichardbd/buildkite-gcp-scaler/pkg/buildkite"
-	"github.com/srichardbd/buildkite-gcp-scaler/pkg/gce"
 )
 
 type Config struct {
@@ -82,12 +84,15 @@ func (s *scaler) run(ctx context.Context) error {
 	}
 	totalInstanceRequirement := metrics.ScheduledJobs + metrics.RunningJobs
 
+	s.logger.Debug("get gce live instance count")
 	liveInstanceCount, err := s.gce.LiveInstanceCount(ctx, s.cfg.GCPProject, s.cfg.GCPZone, s.cfg.InstanceGroupName)
+	s.logger.Debug(fmt.Sprintf("liveInstanceCount: %d", liveInstanceCount))
 	if err != nil {
 		return err
 	}
 
 	if liveInstanceCount >= totalInstanceRequirement {
+		s.logger.Debug("liveInstanceCount >= totalinstanceRequirement")
 		return nil
 	}
 

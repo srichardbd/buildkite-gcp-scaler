@@ -94,8 +94,9 @@ func (c *Client) getMetrics(ctx context.Context) (*metricsQueryResponse, error) 
 
 	req.Header.Set("User-Agent", c.UserAgent)
 	req.Header.Set("Authorization", fmt.Sprintf("Token %s", c.AgentToken))
-
+	c.Logger.Debug("About to send request")
 	res, err := c.HTTPClient.Do(req.WithContext(ctx))
+	c.Logger.Debug(fmt.Sprintf("Dumping Metrics Response: %s", res))
 	if err != nil {
 		return nil, err
 	}
