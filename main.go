@@ -14,15 +14,18 @@ import (
 )
 
 var (
-	buildkiteToken string
-	buildkiteQueue string
+	buildkiteToken    string
+	buildkiteApiToken string
+	buildkiteQueue    string
+	buildkiteOrg      string
 
 	googleCloudProject       string
 	googleCloudZone          string
 	googleCloudInstanceGroup string
 	googleCloudTemplateName  string
 
-	interval string
+	idleTimeout string
+	interval    string
 
 	logger hclog.Logger
 )
@@ -47,15 +50,26 @@ func (cmd *runCommand) Run(ctx context.Context, args []string) error {
 		InstanceGroupTemplate: googleCloudTemplateName,
 		BuildkiteQueue:        buildkiteQueue,
 		BuildkiteToken:        buildkiteToken,
+		BuildkiteApiToken:     buildkiteApiToken,
+		BuildkiteOrg:          buildkiteOrg,
 	}
 
 	if interval != "" {
 		d, err := time.ParseDuration(interval)
 		if err != nil {
-			return fmt.Errorf("Parsing duration failed: %v", err)
+			return fmt.Errorf("Parsing interval duration failed: %v", err)
 		}
 
 		cfg.PollInterval = &d
+	}
+
+	if idleTimeout != "" {
+		d, err := time.ParseDuration(idleTimeout)
+		if err != nil {
+			return fmt.Errorf("Parsing idleTimeout duration failed: %v", err)
+		}
+
+		cfg.IdleTimeout = &d
 	}
 
 	return scaler.NewAutoscaler(cfg, logger).Run(ctx)
@@ -73,7 +87,10 @@ func main() {
 	p.FlagSet = flag.NewFlagSet("global", flag.ExitOnError)
 	p.FlagSet.BoolVar(&debug, "d", false, "enable debug logging")
 	// Set buildkitetoken from environment variable
-	p.FlagSet.StringVar(&buildkiteToken, "buildkite-token", os.Getenv("BUILDKITE_TOKEN"), "Buildkite API token")
+	p.FlagSet.StringVar(&buildkiteToken, "buildkite-token", os.Getenv("BUILDKITE_TOKEN"), "Buildkite token")
+	p.FlagSet.StringVar(&buildkiteApiToken, "buildkite-api-token", os.Getenv("BUILDKITE_API_TOKEN"), "Buildkite API token")
+	p.FlagSet.StringVar(&buildkiteOrg, "buildkite-org", "", "Buildkite Org")
+	p.FlagSet.StringVar(&idleTimeout, "idle-timeout", "5m", "Idle timeout")
 	p.FlagSet.StringVar(&buildkiteQueue, "buildkite-queue", "default", "Buildkite Queue Name")
 	p.FlagSet.StringVar(&googleCloudInstanceGroup, "instance-group", "", "Google Cloud Instance Group")
 	p.FlagSet.StringVar(&googleCloudTemplateName, "instance-template", "", "Google Cloud Instance Template")

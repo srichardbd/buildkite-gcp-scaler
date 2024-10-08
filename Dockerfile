@@ -8,5 +8,7 @@ RUN go mod download && go mod verify
 
 COPY . ./
 
+RUN go mod tidy
+
 RUN go build -v -o /usr/local/bin/buildkite_gcp_scaler
 CMD ["buildkite_gcp_scaler"]

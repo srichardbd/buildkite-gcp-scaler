@@ -109,7 +109,6 @@ func (c *Client) LaunchInstanceForGroup(ctx context.Context, projectID, zone, gr
 	}
 
 	// Add to the group
-
 	req := &compute.InstanceGroupsAddInstancesRequest{
 		Instances: []*compute.InstanceReference{
 			{
@@ -124,4 +123,18 @@ func (c *Client) LaunchInstanceForGroup(ctx context.Context, projectID, zone, gr
 	}
 
 	return c.waitForOperationCompletion(ctx, projectID, zone, ao)
+}
+
+// DestroyInstance deletes a GCE instance.
+func (c *Client) DestroyInstance(ctx context.Context, projectID, zone, instanceName string) error {
+	c.logger.Info("Destroying instance", "name", instanceName)
+
+	// Delete the specified instance
+	deleteOp, err := c.iSvc.Delete(projectID, zone, instanceName).Context(ctx).Do()
+	if err != nil {
+		return fmt.Errorf("Failed to delete instance: %v", err)
+	}
+
+	// Wait for the deletion operation to complete
+	return c.waitForOperationCompletion(ctx, projectID, zone, deleteOp)
 }
