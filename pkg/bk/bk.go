@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
@@ -24,7 +23,7 @@ type Client struct {
 func NewClient(agentToken string, org string, idleTimeout *time.Duration, queueName string, logger hclog.Logger) *Client {
 	client, err := buildkite.NewOpts(buildkite.WithTokenAuth(agentToken))
 	if err != nil {
-		log.Fatalf("creating buildkite API client failed: %v", err)
+		logger.Fatalf("creating buildkite API client failed: %v", err)
 	}
 	return &Client{
 		Org:         org,
