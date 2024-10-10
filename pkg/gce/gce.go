@@ -44,7 +44,7 @@ func (c *Client) LiveInstanceCount(ctx context.Context, projectID, zone, instanc
 
 	count := int64(0)
 	for _, i := range result.Items {
-		if i.Status == "PROVISIONING" || i.Status == "RUNNING" {
+		if i.Status == "PROVISIONING" || i.Status == "RUNNING" || i.Status == "STAGING" {
 			count++
 		}
 	}
