@@ -98,6 +98,9 @@ func (c *Client) GetIdleAgents(ctx context.Context) ([]string, error) {
 						c.Logger.Debug(fmt.Sprintf("Agent %s has been idle longer than %s, since %s\n", agentName, c.IdleTimeout, agent.LastJobFinishedAt.String()))
 						idleAgents = append(idleAgents, agentName)
 					}
+				} else {
+					c.Logger.Debug(fmt.Sprintf("Agent %s has not run a job, is Idle.", agentName))
+					idleAgents = append(idleAgents, agentName)
 				}
 			}
 		}
