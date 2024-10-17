@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"buildkite-gcp-scaler/scaler"
@@ -23,6 +24,7 @@ var (
 	googleCloudZone          string
 	googleCloudInstanceGroup string
 	googleCloudTemplateName  string
+	googleCloudInstanceCap   string
 
 	idleTimeout string
 	interval    string
@@ -72,6 +74,15 @@ func (cmd *runCommand) Run(ctx context.Context, args []string) error {
 		cfg.IdleTimeout = &d
 	}
 
+	if googleCloudInstanceCap != "" {
+		// Convert instanceCap to int64
+		num, err := strconv.ParseInt(googleCloudInstanceCap, 10, 64)
+		if err != nil {
+			return fmt.Errorf("Error converting instanceCap '%s' to integer: %v\n", googleCloudInstanceCap, err)
+		}
+		cfg.InstanceCap = num
+	}
+
 	return scaler.NewAutoscaler(cfg, logger).Run(ctx)
 }
 
@@ -94,6 +105,7 @@ func main() {
 	p.FlagSet.StringVar(&buildkiteQueue, "buildkite-queue", "default", "Buildkite Queue Name")
 	p.FlagSet.StringVar(&googleCloudInstanceGroup, "instance-group", "", "Google Cloud Instance Group")
 	p.FlagSet.StringVar(&googleCloudTemplateName, "instance-template", "", "Google Cloud Instance Template")
+	p.FlagSet.StringVar(&googleCloudInstanceCap, "instance-cap", "", "Google Cloud Instance Cap")
 	p.FlagSet.StringVar(&googleCloudProject, "gcp-project", "", "Google Cloud Project")
 	p.FlagSet.StringVar(&googleCloudZone, "gcp-zone", "", "Google Cloud Zone")
 	p.FlagSet.StringVar(&interval, "interval", "", "How frequently the scaler should run")

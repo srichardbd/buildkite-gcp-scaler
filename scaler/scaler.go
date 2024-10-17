@@ -19,6 +19,7 @@ type Config struct {
 	GCPZone               string
 	InstanceGroupName     string
 	InstanceGroupTemplate string
+	InstanceCap           int64
 	BuildkiteQueue        string
 	BuildkiteToken        string
 	BuildkiteApiToken     string
@@ -119,6 +120,11 @@ func (s *scaler) run(ctx context.Context) error {
 		instanceNames := stripAllAfterLastHyphen(idleAgents)
 		// delete all the now stopped idleInstances
 		return s.deleteInstances(ctx, instanceNames)
+	}
+
+	if liveInstanceCount >= s.cfg.InstanceCap {
+		s.logger.Debug(fmt.Sprintf("liveInstanceCount: %d hit InstanceCap: %d", liveInstanceCount, s.cfg.InstanceCap))
+		return nil
 	}
 
 	required := totalInstanceRequirement - liveInstanceCount
